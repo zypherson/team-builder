@@ -18,10 +18,16 @@ I love creating intuitive and visually appealing web interfaces."
 I enjoy bringing creativity and aesthetics to the digital world."
   },
 ]
+const initialValues= {
+  fname: '',
+  lname:'',
+  bio:''
 
+}
 export default function App() {
   const [members, setMembers] = useState(teamMembers)
   const [editing, setEditing] = useState(null)
+  const [formValues, setFormValues]= useState(initialValues)
   // ✨ Create a third state to track the values of the inputs
 
   useEffect(() => {
@@ -36,6 +42,10 @@ export default function App() {
     // ✨ This is the change handler for your text inputs and your textarea.
     // You can check `evt.target.id` to know which input changed
     // and then you can use `evt.target.value` to update the state of the form
+    setFormValues({...formValues,
+    [evt.target.id]:[evt.target.value]
+    })
+    console.log(formValues)
   }
   const edit = id => {
     // ✨ Put this function inside a click handler for the <button>Edit</button>.
@@ -45,6 +55,10 @@ export default function App() {
   const submitNewMember = () => {
     // This takes the values of the form and constructs a new member object,
     // which is then concatenated at the end of the `members` state
+    const {fname,lname,bio}= formValues
+    const newMember = {fname,lname, bio, id:getId()}
+    setMembers([...members,newMember])
+    
   }
   const editExistingMember = () => {
     // ✨ This takes the values of the form and replaces the data of the
@@ -56,6 +70,8 @@ export default function App() {
     // depending on whether the `editing` state is null or has an id in it.
     // Don't allow the page to reload! Prevent the default behavior
     // and clean up the form after submitting
+    evt.preventDefault()
+    submitNewMember()
   }
   return (
     <div>{/* ✨ Fix the JSX by wiring the necessary values and event handlers */}
@@ -77,20 +93,20 @@ export default function App() {
       </div>
       <div id="membersForm">
         <h2>{editing ? 'Edit' : 'Add'} a Team Member</h2>
-        <form>
+        <form onSubmit={onSubmit}>
           <div>
             <label htmlFor="fname">First Name </label>
-            <input id="fname" type="text" placeholder="Type First Name" />
+            <input value={formValues.fname} onChange={onChange} id="fname" type="text" placeholder="Type First Name" />
           </div>
 
           <div>
             <label htmlFor="lname">Last Name </label>
-            <input id="lname" type="text" placeholder="Type Last Name" />
+            <input value= {formValues.lname} onChange={onChange}  id="lname" type="text" placeholder="Type Last Name" />
           </div>
 
           <div>
             <label htmlFor="bio">Bio </label>
-            <textarea id="bio" placeholder="Type Bio" />
+            <textarea value= {formValues.bio} onChange={onChange} id="bio" placeholder="Type Bio" />
           </div>
 
           <div>
